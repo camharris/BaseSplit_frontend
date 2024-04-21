@@ -22,7 +22,8 @@
     "next": "^14",
     "react": "^18.2",
     "react-dom": "^18.2",
-    "react-focus-lock": "^2.12.0"
+    "react-focus-lock": "^2.12.0",
+    "tabler-icons-react": "^1.56.0"
   },
   "devDependencies": {
     "@types/node": "^20.12.7",

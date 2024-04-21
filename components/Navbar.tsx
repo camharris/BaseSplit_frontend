@@ -5,7 +5,7 @@ export default function Navbar() {
   return (
     <Container>
       <Flex justify={"space-between"} align={"right"}>
-        <Title>BaseMint</Title>
+        <Title>BaseSplit</Title>
         <ConnectWallet />
       </Flex>
     </Container>
