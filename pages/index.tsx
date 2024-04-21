@@ -1,104 +1,30 @@
-import { ConnectWallet } from "@thirdweb-dev/react";
-import styles from "../styles/Home.module.css";
-import Image from "next/image";
 import { NextPage } from "next";
+import { Container, Title, Flex } from "@mantine/core";
+import { useAddress } from "@thirdweb-dev/react";
+import FactoryComponent from "../components/Factory";
+import RegisterSplitter from "../components/RegisterSplitter";
 
 const Home: NextPage = () => {
-  return (
-    <main className={styles.main}>
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <h1 className={styles.title}>
-            Welcome to{" "}
-            <span className={styles.gradientText0}>
-              <a
-                href="https://thirdweb.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                thirdweb.
-              </a>
-            </span>
-          </h1>
+ const address = useAddress();
 
-          <p className={styles.description}>
-            Get started by configuring your desired network in{" "}
-            <code className={styles.code}>src/index.js</code>, then modify the{" "}
-            <code className={styles.code}>src/App.js</code> file!
-          </p>
+  if (!address) {
+    return (
+      <Container maw={1200} py={4}>
+        <Flex h={"50vh"} justify={"center"} align={"center"}>
+          <Title>Please connect your wallet</Title>
+        </Flex>
+      </Container>
+    );
+  }
 
-          <div className={styles.connect}>
-            <ConnectWallet />
-          </div>
-        </div>
+ return (
+   <Container>
+    <FactoryComponent />
+    <RegisterSplitter />
 
-        <div className={styles.grid}>
-          <a
-            href="https://portal.thirdweb.com/"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/images/portal-preview.png"
-              alt="Placeholder preview of starter"
-              width={300}
-              height={200}
-            />
-            <div className={styles.cardText}>
-              <h2 className={styles.gradientText1}>Portal ➜</h2>
-              <p>
-                Guides, references, and resources that will help you build with
-                thirdweb.
-              </p>
-            </div>
-          </a>
-
-          <a
-            href="https://thirdweb.com/dashboard"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/images/dashboard-preview.png"
-              alt="Placeholder preview of starter"
-              width={300}
-              height={200}
-            />
-            <div className={styles.cardText}>
-              <h2 className={styles.gradientText2}>Dashboard ➜</h2>
-              <p>
-                Deploy, configure, and manage your smart contracts from the
-                dashboard.
-              </p>
-            </div>
-          </a>
-
-          <a
-            href="https://thirdweb.com/templates"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/images/templates-preview.png"
-              alt="Placeholder preview of templates"
-              width={300}
-              height={200}
-            />
-            <div className={styles.cardText}>
-              <h2 className={styles.gradientText3}>Templates ➜</h2>
-              <p>
-                Discover and clone template projects showcasing thirdweb
-                features.
-              </p>
-            </div>
-          </a>
-        </div>
-      </div>
-    </main>
-  );
+   </Container>
+  )
+  
 };
 
 export default Home;
