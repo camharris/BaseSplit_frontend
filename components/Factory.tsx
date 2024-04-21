@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useContract, useAddress, useContractRead } from '@thirdweb-dev/react';
 import { Card, Text, SimpleGrid, Button, Group, Box, Skeleton } from '@mantine/core';
 import { FACTORY_ADDRESS } from '../constants/addresses';
+import Link from 'next/link';
 
 const FactoryComponent = () => {
   const address = useAddress();
@@ -69,9 +70,11 @@ const FactoryComponent = () => {
           ) : ownerSplitterData && ownerSplitterData.length > 0 ? (
             ownerSplitterData.map((splitter, idx) => (
               <Group key={idx} position="apart" style={{ marginBottom: 10, alignItems: 'center' }}>
-                <Button onClick={() => console.log(`Opening splitter ${splitter.splitterAddress}`)}>
-                  {splitter.splitterAddress}
-                </Button>
+                <Link href={`/splitter/${splitter.splitterAddress}`}>
+                  <Button>
+                    {splitter.splitterAddress}
+                  </Button>
+                </Link>
                 <Text>Parties: {splitter.parties.length}</Text>
                 {renderStatusBox(splitter.isActive)}
               </Group>
@@ -88,9 +91,11 @@ const FactoryComponent = () => {
           ) : partySplitterData && partySplitterData.length > 0 ? (
             partySplitterData.map((splitter, idx) => (
               <Group key={idx} position="apart" style={{ marginBottom: 10, alignItems: 'center' }}>
-                <Button onClick={() => console.log(`Opening splitter ${splitter.splitterAddress}`)}>
-                  {splitter.splitterAddress}
-                </Button>
+                <Link href={`/splitter/${splitter.splitterAddress}`}>
+                  <Button>
+                    {splitter.splitterAddress}
+                  </Button>
+                </Link>
                 <Text>Parties: {splitter.parties.length}</Text>
                 {renderStatusBox(splitter.isActive)}
               </Group>
