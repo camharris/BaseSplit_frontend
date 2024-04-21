@@ -1,48 +1,71 @@
-import React, { useState, useEffect } from 'react';
-import { useContract, useSigner, useAddress } from '@thirdweb-dev/react';
-import { Button, Text } from '@mantine/core';
+import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
+import { useContract, useContractRead } from '@thirdweb-dev/react';
+import { Button, Text, Card, Group, Box, Space } from '@mantine/core';
 import { ERC20_ADDRESSES } from '../constants/addresses';
-import {SPLITTER_ABI} from '../constants/abis';
+import { SPLITTER_ABI } from '../constants/abis';
 
 const SplitterDetailComponent = ({ splitterAddress }) => {
-  const [splitterDetails, setSplitterDetails] = useState({});
-  const [ethBalance, setEthBalance] = useState('0');
+  const [ethBalance, setEthBalance] = useState('');
   const [erc20Balances, setErc20Balances] = useState({});
-  const signer = useSigner();
-  const contract = useContract(splitterAddress, SPLITTER_ABI, signer);
-
-  const address = useAddress();
+  const contract = useContract(splitterAddress, SPLITTER_ABI);
 
   useEffect(() => {
-    // Fetch Splitter details, ETH balance, and ERC-20 balances
-    // ... code to fetch and set the state
-  }, [splitterAddress, signer]);
+    const fetchBalances = async () => {
+      if (!contract) return;
 
-  // Handler to send ETH to splitter
-  const handleSendEth = async () => {
-    // ... logic to send ETH
+      // Fetch Ethereum balance
+      const balance = await contract.provider.getBalance(splitterAddress);
+      setEthBalance(ethers.utils.formatEther(balance));
+
+      // Fetch ERC20 token balances
+      const balances = {};
+      for (const address of ERC20_ADDRESSES) {
+        const tokenContract = new ethers.Contract(
+          address,
+          ['function balanceOf(address owner) view returns (uint256)', 'function symbol() view returns (string)'],
+          contract.provider
+        );
+        const balance = await tokenContract.balanceOf(splitterAddress);
+        const symbol = await tokenContract.symbol();
+        balances[symbol] = ethers.utils.formatEther(balance);
+      }
+      setErc20Balances(balances);
+    };
+
+    fetchBalances();
+  }, [contract, splitterAddress]);
+
+  // This is a placeholder, replace with actual contract method call
+  const handleSplitEth = async () => {
+    // Perform the split by sending transaction
   };
 
-  // Handler to send ERC-20 tokens to splitter
-  const handleSendErc20 = async (tokenAddress) => {
-    // ... logic to send ERC-20 tokens
+  // This is a placeholder, replace with actual contract method call
+  const handleSplitToken = async (tokenAddress) => {
+    // Perform the token split by sending transaction
   };
 
   return (
-    <div>
-      <Text>Address: {splitterAddress}</Text>
-      <Text>Owner: {splitterDetails.owner}</Text>
-      {/* List parties and shares */}
-      <Text>Ethereum Balance: {ethBalance}</Text>
-      {/* List ERC20 token balances */}
-      <Button onClick={handleSendEth}>Send ETH</Button>
-      {ERC20_ADDRESSES.map((address) => (
-        <Button key={address} onClick={() => handleSendErc20(address)}>
-          Send {address}
-        </Button>
-      ))}
-    </div>
+    <Box sx={{ maxWidth: 800, margin: 'auto' }}>
+      <Card shadow="sm" padding="lg" radius="md" withBorder>
+        <Text size="lg" weight={500}>Splitter Address: {splitterAddress}</Text>
+        <Text size="lg" weight={500}>Ethereum Balance: {ethBalance} ETH</Text>
+        <Space h="md" />
+        {Object.entries(erc20Balances).map(([token, balance]) => (
+          <Text key={token}>{token} Balance: {balance}</Text>
+        ))}
+        <Space h="md" />
+        <Group position="center">
+          <Button onClick={handleSplitEth}>Split ETH</Button>
+          {ERC20_ADDRESSES.map((tokenAddress) => (
+            <Button key={tokenAddress} onClick={() => handleSplitToken(tokenAddress)}>
+              Split ERC20
+            </Button>
+          ))}
+        </Group>
+      </Card>
+    </Box>
   );
 };
 
